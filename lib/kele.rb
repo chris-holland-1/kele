@@ -4,12 +4,12 @@ require 'json'
 class Kele
   include HTTParty
 
-  def initialize(email, password)
+  def initialize(username, password)
     #response = self.class.post("https://www.bloc.io/api/v1/sessions", body: {"email": email, "password": password})
     #raise "Invalid email or password" if response.code != 200
     #@auth_token = response["auth_token"]
     @api_url = 'https://www.bloc.io/api/v1'
-    @auth_token = self.class.post(@api_url + '/sessions', body: { email: username, password: password })["auth_token"]
+    @auth_token = self.class.post(@api_url + '/sessions', body: { username: username, password: password })["auth_token"]
     raise StandardError.new('Invalid credentials') unless @auth_token
   end
 
