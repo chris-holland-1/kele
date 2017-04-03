@@ -4,7 +4,7 @@ require_relative 'kele/roadmap'
 
 class Kele
   include HTTParty
-  #include Roadmap
+  include Roadmap
 
   def initialize(email, password)
     response = self.class.post("https://www.bloc.io/api/v1/sessions", body: {"email": email, "password": password})
@@ -25,17 +25,19 @@ class Kele
     @mentor_availability = JSON.parse(response.body)
   end
 
-  def get_messages(page)
-    if page.nil?
-      response = self.class.get('https://www.bloc.io/api/v1/message_threads', headers: { "authorization" => @auth_token })
-    else
-      response = self.class.get('https://www.bloc.io/api/v1/message_threads', values: {"page": page}, headers: { "authorization" => @auth_token })
-    end
-      @messages = JSON.parse(response.body)
+  def get_messages
+    response = self.class.get("https://www.bloc.io/api/v1/message_threads", headers: { "authorization" => @auth_token })
+    @messages = JSON.parse(response.body)
   end
 
-  def create_message(sender, recipient_id, token, subject, stripped-text)
-    response = self.class.post('https://www.bloc.io/api/v1/messages', values: {"sender": sender, "recipient_id": recipient_id, "token": token, "subject": subject, "stripped-text": stripped-text}, headers: { "authorization" => @auth_token })
+  def create_message(sender, recipient_id, token, subject, stripped_text)
+    response = self.class.post("https://www.bloc.io/api/v1/messages", values: {"sender": sender, "recipient_id": recipient_id, "token": token, "subject": subject, "stripped_text": stripped-text}, headers: { "authorization" => @auth_token })
     @create_message = JSON.parse(response.body)
+  end
+
+  def create_submission(assignment_branch, assignment_commit_link, checkpoint_id, comment)
+    #enrollment_id included in user information
+    response = self.class.post("https://www.bloc.io/api/v1/checkpoint_submissions", values: {"assignment_branch": assignment_branch, "assignment_commit_link": assignment_commit_link, "checkpoint_id": checkpoint_id, "comment": comment}, headers: { "authorization" => @auth_token })
+    @submission = JSON.parse(response.body)
   end
 end
