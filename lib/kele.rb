@@ -4,7 +4,7 @@ require_relative 'kele/roadmap'
 
 class Kele
   include HTTParty
-  include Roadmap
+  #include Roadmap
 
   def initialize(email, password)
     response = self.class.post("https://www.bloc.io/api/v1/sessions", body: {"email": email, "password": password})
@@ -23,5 +23,19 @@ class Kele
   def get_mentor_availability(mentor_id)
     response = self.class.get("https://www.bloc.io/api/v1/mentors/#{mentor_id}/student_availability", headers: { "authorization" => @auth_token })
     @mentor_availability = JSON.parse(response.body)
+  end
+
+  def get_messages(page)
+    if page.nil?
+      response = self.class.get('https://www.bloc.io/api/v1/message_threads', headers: { "authorization" => @auth_token })
+    else
+      response = self.class.get('https://www.bloc.io/api/v1/message_threads', values: {"page": page}, headers: { "authorization" => @auth_token })
+    end
+      @messages = JSON.parse(response.body)
+  end
+
+  def create_message(sender, recipient_id, token, subject, stripped-text)
+    response = self.class.post('https://www.bloc.io/api/v1/messages', values: {"sender": sender, "recipient_id": recipient_id, "token": token, "subject": subject, "stripped-text": stripped-text}, headers: { "authorization" => @auth_token })
+    @create_message = JSON.parse(response.body)
   end
 end
